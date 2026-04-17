@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adishakti | Admin Dashboard</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap"
+        rel="stylesheet">
+
+    <style>
+        /* --- THEME VARIABLES --- */
+        :root {
+            --brand-black: #000000;
+            --brand-orange: #E67E22;
+            --brand-gold: #D4AF37;
+            --brand-gradient: linear-gradient(135deg, #E67E22 0%, #D4AF37 100%);
+
+            --text-dark: #1a1a1a;
+            --text-grey: #666666;
+            --text-light: #9ca3af;
+
+            --bg-body: #f3f4f6;
+            --bg-card: #ffffff;
+            --border: #e5e7eb;
+
+            --danger: #ef4444;
+            --success: #10b981;
+
+            --font-sans: 'Montserrat', sans-serif;
+            --font-serif: 'Playfair Display', serif;
+
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            outline: none;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background-color: var(--bg-body);
+            color: var(--text-dark);
+            min-height: 100vh;
+            line-height: 1.5;
+        }
+
+        /* --- AUTH SCREEN --- */
+        #auth-screen {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle at center, #1a1a1a 0%, #000000 100%);
+            padding: 20px;
+            z-index: 50;
+        }
+
+        .login-card {
+            background: var(--bg-card);
+            padding: 3rem;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .login-logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--brand-black);
+            margin-bottom: 5px;
+        }
+
+        .login-logo span {
+            color: var(--brand-orange);
+        }
+
+        .login-sub {
+            color: var(--text-grey);
+            font-size: 0.9rem;
+            margin-bottom: 30px;
+        }
+
+        .btn-google {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--border);
+            border-radius: 50px;
+            background: white;
+            color: var(--text-dark);
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-google:hover {
+            border-color: var(--brand-orange);
+            background: #fffbf7;
+        }
+
+        .auth-error {
+            margin-top: 15px;
+            color: var(--danger);
+            font-size: 0.85rem;
+            background: #fef2f2;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #fecaca;
+        }
+
+        /* --- DASHBOARD LAYOUT --- */
+        .app-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: var(--brand-black);
+            color: white;
+            padding: 1.2rem 2rem;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+        }
+
+        .header-logo {
+            font-size: 1.4rem;
+            font-weight: 800;
+        }
+
+        .header-logo span {
+            color: var(--brand-orange);
+        }
+
+        .header-role {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #aaa;
+            margin-top: -2px;
+        }
+
+        .header-user {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-email {
+            font-size: 0.85rem;
+            color: #ddd;
+            display: none;
+        }
+
+        /* Hidden on mobile */
+        @media(min-width: 768px) {
+            .user-email {
+                display: block;
+            }
+        }
+
+        .logout-btn {
+            background: var(--brand-orange);
+            color: white;
+            border: none;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.5rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .logout-btn:hover {
+            background: #d35400;
+        }
+
+        /* --- GRID SYSTEM --- */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+        }
+
+        @media (min-width: 1024px) {
+
+            /* Property View: Sidebar (Form) + Main (List) */
+            #property-dashboard .dashboard-grid {
+                grid-template-columns: 380px 1fr;
+                align-items: start;
+            }
+
+            /* Inquiry View: Full Width */
+            #inquiry-dashboard .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* --- CARDS --- */
+        .card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-family: var(--font-serif);
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--brand-black);
+        }
+
+        .refresh-btn {
+            background: none;
+            border: none;
+            color: var(--text-grey);
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: 0.2s;
+        }
+
+        .refresh-btn:hover {
+            color: var(--brand-orange);
+        }
+
+        /* --- FORMS --- */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--text-grey);
+            margin-bottom: 6px;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-family: var(--font-sans);
+            font-size: 0.9rem;
+            background: #f9f9f9;
+            transition: 0.2s;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            background: white;
+            border-color: var(--brand-orange);
+            box-shadow: 0 0 0 3px rgba(230, 126, 34, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 14px;
+            background: var(--brand-gradient);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-top: 10px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(230, 126, 34, 0.3);
+        }
+
+        /* --- PROPERTY LIST --- */
+        .property-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .prop-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: 0.3s;
+        }
+
+        .prop-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow);
+            border-color: var(--brand-orange);
+        }
+
+        .prop-img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            background: #eee;
+        }
+
+        .prop-content {
+            padding: 15px;
+        }
+
+        .prop-title {
+            font-weight: 700;
+            color: var(--text-dark);
+            font-size: 1rem;
+            margin-bottom: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .prop-meta {
+            font-size: 0.8rem;
+            color: var(--text-grey);
+            margin-bottom: 10px;
+        }
+
+        .prop-price {
+            font-family: var(--font-serif);
+            font-weight: 700;
+            color: var(--brand-orange);
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+        }
+
+        .badges {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+        .badge {
+            font-size: 0.65rem;
+            padding: 3px 8px;
+            background: #eee;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .badge.active {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .btn-delete {
+            width: 100%;
+            padding: 8px;
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .btn-delete:hover {
+            background: var(--danger);
+            color: white;
+            border-color: var(--danger);
+        }
+
+        /* --- INQUIRY LIST --- */
+        .inquiry-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        .inquiry-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--brand-orange);
+            border-radius: 8px;
+            padding: 20px;
+            transition: 0.2s;
+        }
+
+        .inquiry-card:hover {
+            transform: translateX(5px);
+            box-shadow: var(--shadow);
+        }
+
+        .inq-head {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .inq-name {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--brand-black);
+        }
+
+        .inq-date {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        .inq-phone {
+            display: inline-block;
+            font-weight: 600;
+            color: var(--success);
+            text-decoration: none;
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+        }
+
+        .inq-phone:hover {
+            text-decoration: underline;
+        }
+
+        .inq-msg {
+            background: var(--bg-body);
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            color: var(--text-grey);
+            margin-bottom: 15px;
+        }
+
+        /* --- UTILS --- */
+        .hidden {
+            display: none !important;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-light);
+            grid-column: 1/-1;
+        }
+
+        /* Loader */
+        #loader {
+            position: fixed;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.9);
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #eee;
+            border-top-color: var(--brand-orange);
+            border-radius: 50%;
+            animation: spin 1s infinite linear;
+            margin-bottom: 10px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="loader" class="hidden">
+        <div class="spinner"></div>
+        <div style="font-weight:600; color:var(--brand-black);" id="loader-text">Loading...</div>
+    </div>
+
+    <div id="auth-screen">
+        <div class="login-card">
+            <div class="login-logo">ADISHAKTI<span>REALTY.</span></div>
+            <p class="login-sub">Administrative Access Portal</p>
+
+            <button id="login-btn" class="btn-google">
+                <svg width="18" height="18" viewBox="0 0 18 18">
+                    <path
+                        d="M17.64 9.2c0-.637-.057-1.252-.164-1.841H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"
+                        fill="#4285F4" />
+                    <path
+                        d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.715H.957v2.332A8.997 8.997 0 0 0 9 18z"
+                        fill="#34A853" />
+                    <path
+                        d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"
+                        fill="#FBBC05" />
+                    <path
+                        d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.159 6.656 3.58 9 3.58z"
+                        fill="#EA4335" />
+                </svg>
+                Sign in with Google
+            </button>
+            <div id="auth-error" class="auth-error hidden"></div>
+        </div>
+    </div>
+
+    <div id="main-app" class="hidden">
+        <div class="app-container">
+
+            <header>
+                <div>
+                    <div class="header-logo">ADISHAKTI<span>REALTY.</span></div>
+                    <div class="header-role" id="page-subtitle">Admin Panel</div>
+                </div>
+                <div class="header-user">
+                    <span class="user-email" id="user-email">email@example.com</span>
+                    <button id="logout-btn" class="logout-btn">Logout</button>
+                </div>
+            </header>
+
+            <div id="property-dashboard" class="hidden">
+                <div class="dashboard-grid">
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Add Property</h2>
+                        </div>
+                        <form id="property-form">
+                            <div class="form-group">
+                                <label>Project Name</label>
+                                <input type="text" id="projectName" required placeholder="e.g. Sunrise Towers">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Images (Max 5)</label>
+                                <input type="file" id="imageInput" multiple accept="image/*" required
+                                    style="padding:8px 0; background:none; border:none;">
+                                <div style="font-size:0.75rem; color:var(--text-light);">Auto-compressed for database
+                                    storage</div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Config (BHK)</label>
+                                    <input type="text" id="bhk" placeholder="2 BHK">
+                                </div>
+                                <div class="form-group">
+                                    <label>Carpet Area</label>
+                                    <input type="text" id="carpetArea" placeholder="950 sq.ft">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Price</label>
+                                <input type="text" id="price" placeholder="₹45 Lakhs+">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Location</label>
+                                <input type="text" id="location" required placeholder="Baner, Pune">
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>MahaRERA</label>
+                                    <select id="mahareraStatus">
+                                        <option value="No">No</option>
+                                        <option value="Yes">Yes</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>MSRDC</label>
+                                    <select id="msrdcStatus">
+                                        <option value="No">No</option>
+                                        <option value="Yes">Yes</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Amenities</label>
+                                <textarea id="amenities" rows="2" placeholder="Pool, Gym, Garden..."></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Connectivity</label>
+                                <textarea id="connectivity" rows="2" placeholder="Near Highway, Metro..."></textarea>
+                            </div>
+
+                            <button type="submit" class="btn-primary">Publish Property</button>
+                        </form>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Live Properties</h2>
+                            <button id="refresh-prop-btn" class="refresh-btn"><i class="fas fa-sync-alt"></i>
+                                Refresh</button>
+                        </div>
+                        <div id="property-container" class="property-grid">
+                            <div class="empty-state">Loading properties...</div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div id="inquiry-dashboard" class="hidden">
+                <div class="dashboard-grid">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Inquiry Inbox</h2>
+                            <button id="refresh-inq-btn" class="refresh-btn">Refresh List</button>
+                        </div>
+                        <div id="inquiry-container" class="inquiry-grid">
+                            <div class="empty-state">Loading messages...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        // FIREBASE CONFIG
+        const firebaseConfig = {
+            apiKey: "AIzaSyBVrjOiSrVvHdl2YKpeqpscurgXY3ssgCI",
+            authDomain: "adishaktirealty-770f3.firebaseapp.com",
+            projectId: "adishaktirealty-770f3",
+            storageBucket: "adishaktirealty-770f3.firebasestorage.app",
+            messagingSenderId: "503178690938",
+            appId: "1:503178690938:web:d10d7e7f8d1dfd9db296c3"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // EMAILS
+        const ADMIN_EMAIL = "adishaktirealty1@gmail.com";
+        const INQUIRY_EMAIL = "vedantamb0905@gmail.com";
+        const DELETE_PIN = "adishakti@132";
+
+        // UI ELEMENTS
+        const authScreen = document.getElementById('auth-screen');
+        const mainApp = document.getElementById('main-app');
+        const authError = document.getElementById('auth-error');
+        const propDash = document.getElementById('property-dashboard');
+        const inqDash = document.getElementById('inquiry-dashboard');
+        const pageSubtitle = document.getElementById('page-subtitle');
+        const loader = document.getElementById('loader');
+        const loaderText = document.getElementById('loader-text');
+
+        // --- AUTH LOGIC ---
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                const email = user.email.toLowerCase();
+                document.getElementById('user-email').innerText = user.email;
+
+                if (email === ADMIN_EMAIL.toLowerCase()) {
+                    // Show Property Manager
+                    authScreen.classList.add('hidden');
+                    mainApp.classList.remove('hidden');
+                    propDash.classList.remove('hidden');
+                    inqDash.classList.add('hidden');
+                    pageSubtitle.innerText = "Property Manager";
+                    loadProperties();
+                }
+                else if (email === INQUIRY_EMAIL.toLowerCase()) {
+                    // Show Inquiry Viewer
+                    authScreen.classList.add('hidden');
+                    mainApp.classList.remove('hidden');
+                    propDash.classList.add('hidden');
+                    inqDash.classList.remove('hidden');
+                    pageSubtitle.innerText = "Inquiry Viewer";
+                    loadInquiries();
+                }
+                else {
+                    authError.innerText = "Access Denied: Email not authorized.";
+                    authError.classList.remove('hidden');
+                    signOut(auth);
+                }
+            } else {
+                authScreen.classList.remove('hidden');
+                mainApp.classList.add('hidden');
+            }
+        });
+
+        document.getElementById('login-btn').addEventListener('click', () => {
+            signInWithPopup(auth, new GoogleAuthProvider()).catch(e => {
+                authError.innerText = e.message;
+                authError.classList.remove('hidden');
+            });
+        });
+
+        document.getElementById('logout-btn').addEventListener('click', () => signOut(auth));
+
+        // --- PROPERTY LOGIC ---
+        const propertyContainer = document.getElementById('property-container');
+        document.getElementById('refresh-prop-btn').addEventListener('click', loadProperties);
+
+        async function loadProperties() {
+            propertyContainer.innerHTML = '<div class="empty-state">Loading...</div>';
+            try {
+                const q = query(collection(db, "adishakti"), orderBy("createdAt", "desc"));
+                const snap = await getDocs(q);
+                propertyContainer.innerHTML = "";
+
+                if (snap.empty) {
+                    propertyContainer.innerHTML = '<div class="empty-state">No properties found.</div>';
+                    return;
+                }
+
+                snap.forEach(docSnap => {
+                    const data = docSnap.data();
+                    const thumb = data.images && data.images.length > 0 ? data.images[0] : '';
+                    const card = document.createElement('div');
+                    card.className = 'prop-card';
+                    card.innerHTML = `
+                        <img src="${thumb}" class="prop-img">
+                        <div class="prop-content">
+                            <div class="prop-title">${data.projectName}</div>
+                            <div class="prop-meta">📍 ${data.location}</div>
+                            <div class="prop-price">💰 ${data.price}</div>
+                            <div class="badges">
+                                ${data.isMahareraRegistered === 'Yes' ? '<span class="badge active">RERA</span>' : ''}
+                                ${data.isMsrdcApproved === 'Yes' ? '<span class="badge active">MSRDC</span>' : ''}
+                            </div>
+                            <button class="btn-delete" onclick="handleDeleteProp('${docSnap.id}', '${data.projectName}')">
+                                🗑 Delete
+                            </button>
+                        </div>
+                    `;
+                    propertyContainer.appendChild(card);
+                });
+            } catch (error) { console.error(error); }
+        }
+
+        // Add Property
+        const propForm = document.getElementById('property-form');
+        propForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const files = document.getElementById('imageInput').files;
+            if (files.length === 0 || files.length > 5) return alert("Select 1-5 images.");
+
+            loader.classList.remove('hidden');
+            loaderText.innerText = "Processing...";
+
+            try {
+                const imgs = [];
+                for (let i = 0; i < files.length; i++) imgs.push(await convertToBase64(files[i]));
+
+                await addDoc(collection(db, "adishakti"), {
+                    projectName: document.getElementById('projectName').value,
+                    bhk: document.getElementById('bhk').value,
+                    price: document.getElementById('price').value,
+                    location: document.getElementById('location').value,
+                    carpetArea: document.getElementById('carpetArea').value,
+                    amenities: document.getElementById('amenities').value,
+                    connectivity: document.getElementById('connectivity').value,
+                    isMahareraRegistered: document.getElementById('mahareraStatus').value,
+                    isMsrdcApproved: document.getElementById('msrdcStatus').value,
+                    images: imgs,
+                    createdAt: serverTimestamp(),
+                    createdBy: auth.currentUser.email
+                });
+
+                await loadProperties();
+                loader.classList.add('hidden');
+                propForm.reset();
+                alert("Property Added!");
+            } catch (error) {
+                loader.classList.add('hidden');
+                alert("Error: " + error.message);
+            }
+        });
+
+        window.handleDeleteProp = async (id, name) => {
+            const pin = prompt(`To delete "${name}", enter PIN:`);
+            if (pin !== DELETE_PIN) return alert("Incorrect PIN.");
+            if (!confirm("Confirm deletion?")) return;
+
+            loader.classList.remove('hidden');
+            try {
+                await deleteDoc(doc(db, "adishakti", id));
+                await loadProperties();
+                loader.classList.add('hidden');
+            } catch (e) { alert(e.message); loader.classList.add('hidden'); }
+        };
+
+        // --- INQUIRY LOGIC ---
+        const inquiryContainer = document.getElementById('inquiry-container');
+        document.getElementById('refresh-inq-btn').addEventListener('click', loadInquiries);
+
+        async function loadInquiries() {
+            inquiryContainer.innerHTML = '<div class="empty-state">Loading...</div>';
+            try {
+                const q = query(collection(db, "inquiries"), orderBy("timestamp", "desc"));
+                const snap = await getDocs(q);
+                inquiryContainer.innerHTML = "";
+
+                if (snap.empty) {
+                    inquiryContainer.innerHTML = '<div class="empty-state">No new inquiries.</div>';
+                    return;
+                }
+
+                snap.forEach(docSnap => {
+                    const data = docSnap.data();
+                    const date = data.timestamp ? data.timestamp.toDate().toLocaleString() : 'Just now';
+
+                    const card = document.createElement('div');
+                    card.className = 'inquiry-card';
+                    card.innerHTML = `
+                        <div class="inq-head">
+                            <span class="inq-name">${data.name}</span>
+                            <span class="inq-date">${date}</span>
+                        </div>
+                        <a href="tel:${data.phone}" class="inq-phone">📞 ${data.phone}</a>
+                        <div class="inq-msg">${data.message}</div>
+                        <button class="btn-delete" onclick="handleDeleteInquiry('${docSnap.id}')">
+                            🗑 Remove Inquiry
+                        </button>
+                    `;
+                    inquiryContainer.appendChild(card);
+                });
+            } catch (error) { console.error(error); }
+        }
+
+        window.handleDeleteInquiry = async (id) => {
+            if (!confirm("Delete this message?")) return;
+            loader.classList.remove('hidden');
+            try {
+                await deleteDoc(doc(db, "inquiries", id));
+                await loadInquiries();
+                loader.classList.add('hidden');
+            } catch (e) { alert(e.message); loader.classList.add('hidden'); }
+        };
+
+        // --- UTILS ---
+        async function convertToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.src = e.target.result;
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        let w = img.width, h = img.height;
+                        if (w > 700) { h *= 700 / w; w = 700; }
+                        canvas.width = w; canvas.height = h;
+                        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+                        resolve(canvas.toDataURL('image/jpeg', 0.5));
+                    };
+                };
+            });
+        }
+    </script>
+</body>
+
+</html>

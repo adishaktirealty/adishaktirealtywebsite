@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Properties | Adishakti Realty</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+    <style>
+        /* --- EXACT THEME VARIABLES FROM INDEX.HTML --- */
+        :root {
+            --primary-gold: #D4AF37;
+            --primary-orange: #E67E22;
+            --gradient-main: linear-gradient(135deg, #E67E22 0%, #D4AF37 100%);
+            --dark-text: #1a1a1a;
+            --light-text: #555555;
+            --bg-white: #ffffff;
+            --off-white: #f8f8f8;
+            --font-main: 'Montserrat', sans-serif;
+            --font-serif: 'Playfair Display', serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-main);
+            color: var(--dark-text);
+            background-color: var(--bg-white);
+            overflow-x: hidden;
+            padding-top: 80px;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            font-family: var(--font-main);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* --- NAVBAR (From Index) --- */
+        /* nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: 80px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 5%;
+            z-index: 1000;
+            background: white;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .logo {
+            font-size: 1.4rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--dark-text);
+        }
+
+        .logo span {
+            color: var(--primary-orange);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--dark-text);
+            position: relative;
+            transition: 0.3s;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background: var(--primary-gold);
+            transition: 0.3s;
+        }
+
+        .nav-links a:hover::after,
+        .nav-links a.active::after {
+            width: 100%;
+        }
+
+        .menu-toggle {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--dark-text);
+        } */
+
+        /* --- PAGE HEADER --- */
+        .page-header {
+            padding: 60px 5% 40px;
+            text-align: center;
+            background: linear-gradient(to bottom, #fff, var(--off-white));
+        }
+
+        .page-title {
+            font-family: var(--font-serif);
+            font-size: 3rem;
+            color: var(--dark-text);
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .page-subtitle {
+            font-size: 0.9rem;
+            color: var(--light-text);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        /* --- FILTER BAR --- */
+        .filter-container {
+            padding: 0 5% 40px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .filter-btn {
+            padding: 10px 24px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 50px;
+            font-family: var(--font-main);
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            color: var(--light-text);
+            text-transform: uppercase;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            border-color: var(--primary-orange);
+            background: var(--primary-orange);
+            color: white;
+            box-shadow: 0 4px 10px rgba(230, 126, 34, 0.2);
+        }
+
+        /* Mobile Dropdown */
+        .filter-dropdown {
+            display: none;
+            width: 100%;
+            max-width: 300px;
+            position: relative;
+            margin: 0 auto;
+        }
+
+        .filter-select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 50px;
+            font-family: var(--font-main);
+            appearance: none;
+            background: white;
+            outline: none;
+        }
+
+        /* --- PROPERTY GRID --- */
+        .properties-section {
+            padding: 0 5% 80px;
+            background: var(--off-white);
+            padding-top: 40px;
+        }
+
+        .grid-layout {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 30px;
+            align-items: stretch;
+            /* Forces equal height */
+        }
+
+        /* --- EXACT CARD DESIGN FROM INDEX.HTML --- */
+        .property-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.03);
+            transition: transform 0.4s ease;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            /* Fill the grid height */
+        }
+
+        .property-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-img-container {
+            height: 260px;
+            overflow: hidden;
+            position: relative;
+            background: #eee;
+        }
+
+        /* Image Slider Logic (Inside container) */
+        .slider-wrapper {
+            display: flex;
+            height: 100%;
+            transition: transform 0.4s ease;
+        }
+
+        .card-img {
+            width: 100%;
+            min-width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+        .property-card:hover .card-img {
+            transform: scale(1.08);
+        }
+
+        /* Slider Buttons */
+        .slider-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: 0.3s;
+            z-index: 5;
+            color: var(--dark-text);
+        }
+
+        .property-card:hover .slider-btn {
+            opacity: 1;
+        }
+
+        .slider-btn.prev {
+            left: 10px;
+        }
+
+        .slider-btn.next {
+            right: 10px;
+        }
+
+        /* PRICE TAG OVERLAY (From Index.html) */
+        .price-tag {
+            position: absolute;
+            bottom: 15px;
+            left: 15px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 8px 16px;
+            font-weight: 700;
+            color: var(--primary-orange);
+            border-radius: 4px;
+            font-family: var(--font-main);
+            font-size: 0.9rem;
+            /* Clean Montserrat font */
+            z-index: 2;
+        }
+
+        /* Badges Overlay */
+        .badges-container {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            align-items: flex-end;
+            z-index: 3;
+        }
+
+        .badge {
+            font-size: 0.6rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 4px 10px;
+            background: var(--dark-text);
+            color: white;
+            border-radius: 4px;
+        }
+
+        .card-info {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Title: Serif Font (Matches Skyline Heights) */
+        .card-info h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            font-family: var(--font-serif);
+            color: var(--dark-text);
+        }
+
+        .location {
+            color: #777;
+            font-size: 0.9rem;
+            margin-bottom: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .location i {
+            color: var(--primary-orange);
+        }
+
+        /* Specs Row */
+        .specs {
+            display: flex;
+            justify-content: space-between;
+            border-top: 1px solid #f0f0f0;
+            padding-top: 1rem;
+            color: #666;
+            font-size: 0.85rem;
+            margin-bottom: 1.5rem;
+            /* Space before button */
+        }
+
+        .specs span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .specs span i {
+            color: var(--primary-gold);
+            margin-right: 6px;
+        }
+
+        /* Outline Button (Matches Index) */
+        .btn-outline {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid var(--primary-gold);
+            background: transparent;
+            color: var(--dark-text);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            border-radius: 30px;
+            transition: 0.3s;
+            text-align: center;
+            display: block;
+            margin-top: auto;
+            /* Pushes button to bottom */
+        }
+
+        .btn-outline:hover {
+            background: var(--primary-gold);
+            color: white;
+        }
+
+        /* --- LOAD MORE --- */
+        .load-more-container {
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .btn-load-more {
+            padding: 12px 30px;
+            background: transparent;
+            border: 2px solid var(--dark-text);
+            color: var(--dark-text);
+            font-family: var(--font-main);
+            font-weight: 700;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: 0.3s;
+            border-radius: 50px;
+        }
+
+        .btn-load-more:hover {
+            background: var(--dark-text);
+            color: white;
+        }
+
+        /* Loader */
+        .loader-area {
+            text-align: center;
+            padding: 60px;
+            grid-column: 1/-1;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #eee;
+            border-top-color: var(--primary-orange);
+            border-radius: 50%;
+            animation: spin 1s infinite linear;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 768px) {
+            .nav-links {
+                position: absolute;
+                top: 80px;
+                left: 0;
+                width: 100%;
+                background: white;
+                flex-direction: column;
+                align-items: center;
+                gap: 0;
+                max-height: 0;
+                overflow: hidden;
+                transition: 0.4s ease;
+                box-shadow: 0 10px 10px rgba(0, 0, 0, 0.05);
+            }
+
+            .nav-links.active {
+                max-height: 300px;
+                padding: 20px 0;
+            }
+
+            .nav-links li {
+                width: 100%;
+                text-align: center;
+                padding: 15px 0;
+                border-bottom: 1px solid #f5f5f5;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            .grid-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .filter-group {
+                display: none;
+            }
+
+            .filter-dropdown {
+                display: block;
+            }
+
+            .page-title {
+                font-size: 2.2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="navbar-placeholder"></div>
+
+    <header class="page-header">
+        <h1 class="page-title reveal">Exclusive Inventory</h1>
+        <div class="page-subtitle reveal">Handpicked Residences</div>
+    </header>
+
+    <div class="filter-container">
+        <div class="filter-group">
+            <button class="filter-btn active" onclick="applyFilter('all')">All Properties</button>
+            <button class="filter-btn" onclick="applyFilter('1')">1 BHK</button>
+            <button class="filter-btn" onclick="applyFilter('2')">2 BHK</button>
+            <button class="filter-btn" onclick="applyFilter('3')">3 BHK</button>
+        </div>
+        <div class="filter-dropdown">
+            <select class="filter-select" onchange="applyFilter(this.value)">
+                <option value="all">All Properties</option>
+                <option value="1">1 BHK</option>
+                <option value="2">2 BHK</option>
+                <option value="3">3 BHK</option>
+            </select>
+        </div>
+    </div>
+
+    <section class="properties-section">
+        <div class="grid-layout" id="propertyGrid">
+            <div class="loader-area" id="initialLoader">
+                <div class="spinner"></div>
+                <p style="color:var(--light-text);">Fetching Properties...</p>
+            </div>
+        </div>
+
+        <div class="load-more-container">
+            <button id="loadMoreBtn" class="btn-load-more hidden" onclick="loadMore()">Load More Listings</button>
+            <div id="loadMoreLoader" class="spinner hidden"
+                style="width:30px; height:30px; border-width:2px; display:inline-block;"></div>
+        </div>
+    </section>
+    <script src="layout.js"></script>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, getDocs, query, orderBy, limit, startAfter } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBVrjOiSrVvHdl2YKpeqpscurgXY3ssgCI",
+            authDomain: "adishaktirealty-770f3.firebaseapp.com",
+            projectId: "adishaktirealty-770f3",
+            storageBucket: "adishaktirealty-770f3.firebasestorage.app",
+            messagingSenderId: "503178690938",
+            appId: "1:503178690938:web:d10d7e7f8d1dfd9db296c3"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const grid = document.getElementById('propertyGrid');
+        const loadMoreBtn = document.getElementById('loadMoreBtn');
+        const initialLoader = document.getElementById('initialLoader');
+        const loadMoreLoader = document.getElementById('loadMoreLoader');
+
+        let lastVisible = null;
+        let currentFilter = 'all';
+        const PAGE_SIZE = 9;
+        const FETCH_SIZE = 10;
+
+        // --- FETCH LOGIC ---
+        async function fetchProperties(isNextPage = false) {
+            try {
+                if (!isNextPage) {
+                    grid.innerHTML = "";
+                    grid.appendChild(initialLoader);
+                    initialLoader.style.display = "block";
+                    loadMoreBtn.classList.add('hidden');
+                    lastVisible = null;
+                } else {
+                    loadMoreBtn.classList.add('hidden');
+                    loadMoreLoader.classList.remove('hidden');
+                }
+
+                const collectionRef = collection(db, "adishakti");
+                let conditions = [orderBy("createdAt", "desc"), limit(FETCH_SIZE)];
+
+                if (isNextPage && lastVisible) {
+                    conditions.push(startAfter(lastVisible));
+                }
+
+                const q = query(collectionRef, ...conditions);
+                const snapshot = await getDocs(q);
+
+                if (!isNextPage) initialLoader.style.display = "none";
+                else loadMoreLoader.classList.add('hidden');
+
+                if (snapshot.empty) {
+                    if (!isNextPage) grid.innerHTML = "<p style='text-align:center; width:100%; padding:40px; grid-column:1/-1; color:var(--light-text);'>No properties found.</p>";
+                    return;
+                }
+
+                const docs = snapshot.docs;
+                let hasNextPage = false;
+                let itemsToRender = docs;
+
+                if (docs.length > PAGE_SIZE) {
+                    hasNextPage = true;
+                    itemsToRender = docs.slice(0, PAGE_SIZE);
+                    lastVisible = itemsToRender[itemsToRender.length - 1];
+                } else {
+                    hasNextPage = false;
+                    lastVisible = docs[docs.length - 1];
+                }
+
+                itemsToRender.forEach((doc) => {
+                    const data = doc.data();
+                    if (currentFilter !== 'all') {
+                        const bhk = data.bhk ? data.bhk.toString() : "";
+                        if (!bhk.includes(currentFilter)) return;
+                    }
+                    createCard(doc.id, data);
+                });
+
+                if (hasNextPage) loadMoreBtn.classList.remove('hidden');
+                else loadMoreBtn.classList.add('hidden');
+
+                gsap.from(".new-card", {
+                    y: 30, opacity: 0, duration: 0.5, stagger: 0.1, ease: "power2.out",
+                    onComplete: () => document.querySelectorAll('.new-card').forEach(el => el.classList.remove('new-card'))
+                });
+
+            } catch (error) {
+                console.error("Error:", error);
+                if (!isNextPage) grid.innerHTML = "<p style='color:red; text-align:center; grid-column:1/-1;'>Error loading data.</p>";
+            }
+        }
+
+        // --- CREATE CARD (STRUCTURE MATCHES INDEX.HTML) ---
+        function createCard(id, data) {
+            const images = data.images && data.images.length > 0 ? data.images : ['https://via.placeholder.com/600x400'];
+            let sliderHTML = "";
+            images.forEach(img => { sliderHTML += `<img src="${img}" class="card-img">`; });
+
+            // Badges
+            let badgesHTML = "";
+            if (data.isMahareraRegistered === 'Yes') badgesHTML += `<div class="badge">RERA</div>`;
+            if (data.isMsrdcApproved === 'Yes') badgesHTML += `<div class="badge">MSRDC</div>`;
+
+            let priceDisplay = data.price.includes('₹') ? data.price : `₹ ${data.price}`;
+
+            const card = document.createElement('div');
+            card.className = 'property-card new-card';
+            card.innerHTML = `
+                <div class="card-img-container" id="slider-${id}">
+                    <div class="slider-wrapper" data-idx="0">${sliderHTML}</div>
+                    <div class="price-tag">${priceDisplay}</div>
+                    <div class="badges-container">${badgesHTML}</div>
+                    ${images.length > 1 ? `
+                        <button class="slider-btn prev" onclick="moveSlider('${id}', -1)"><i class="fas fa-chevron-left"></i></button>
+                        <button class="slider-btn next" onclick="moveSlider('${id}', 1)"><i class="fas fa-chevron-right"></i></button>
+                    ` : ''}
+                </div>
+                
+                <div class="card-info">
+                    <h3>${data.projectName}</h3>
+                    <div class="location"><i class="fas fa-map-marker-alt"></i> ${data.location}</div>
+                    
+                    <div class="specs">
+                        <span><i class="fas fa-bed"></i> ${data.bhk}</span>
+                        <span><i class="fas fa-vector-square"></i> ${data.carpetArea}</span>
+                    </div>
+
+                    <a href="property.html?id=${id}" class="btn-outline">
+                        View Details
+                    </a>
+                </div>
+            `;
+            grid.appendChild(card);
+        }
+
+        // --- GLOBAL FUNCTIONS ---
+        window.applyFilter = (filterType) => {
+            currentFilter = filterType;
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.innerText.includes(filterType === 'all' ? 'All' : filterType)) btn.classList.add('active');
+            });
+            fetchProperties(false);
+        };
+
+        window.loadMore = () => fetchProperties(true);
+
+        window.moveSlider = (id, direction) => {
+            const slider = document.querySelector(`#slider-${id} .slider-wrapper`);
+            if (!slider) return;
+            const totalSlides = slider.children.length;
+            let idx = parseInt(slider.getAttribute('data-idx') || 0);
+            idx += direction;
+            if (idx < 0) idx = totalSlides - 1;
+            if (idx >= totalSlides) idx = 0;
+            slider.style.transform = `translateX(-${idx * 100}%)`;
+            slider.setAttribute('data-idx', idx);
+        };
+
+        // --- MOBILE MENU ---
+        // const menuBtn = document.getElementById('mobile-menu');
+        // const navList = document.getElementById('nav-list');
+        // menuBtn.addEventListener('click', () => {
+        //     navList.classList.toggle('active');
+        //     const icon = menuBtn.querySelector('i');
+        //     if(navList.classList.contains('active')) {
+        //         icon.classList.remove('fa-bars'); icon.classList.add('fa-times');
+        //     } else {
+        //         icon.classList.remove('fa-times'); icon.classList.add('fa-bars');
+        //     }
+        // });
+
+        // INIT
+        gsap.from(".reveal", { y: 20, opacity: 0, duration: 1, stagger: 0.15, ease: "power3.out" });
+        fetchProperties();
+
+    </script>
+</body>
+
+</html>

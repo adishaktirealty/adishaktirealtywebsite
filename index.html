@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adishakti Realty | Premium Real Estate</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <style>
+        /* Note: Variables and Nav/Footer styles are now loaded from layout.js */
+
+        /* --- GLOBAL RESET --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        html,
+        body {
+            width: 100%;
+            font-family: 'Montserrat', sans-serif;
+            /* Fallback */
+            color: #1a1a1a;
+            background-color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        img {
+            display: block;
+            max-width: 100%;
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            font-family: inherit;
+        }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            width: 100%;
+            overflow: hidden;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .hero-bg {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 60%;
+            height: 100%;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .hero-bg video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 55%;
+            height: 100%;
+            background: #ffffff;
+            clip-path: polygon(0 0, 100% 0, 85% 100%, 0% 100%);
+            z-index: 2;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 3;
+            width: 100%;
+            max-width: 600px;
+            padding-left: 8%;
+            padding-right: 2rem;
+            margin-top: 7em;
+        }
+
+        .hero-tagline {
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 3px;
+            color: #E67E22;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            display: inline-block;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            line-height: 1.1;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            color: #000;
+        }
+
+        .hero h1 span {
+            display: block;
+            font-family: 'Playfair Display', serif;
+            font-weight: 400;
+            font-style: italic;
+            color: #D4AF37;
+        }
+
+        .hero p {
+            font-size: 1rem;
+            color: #555555;
+            line-height: 1.7;
+            margin-bottom: 2.5rem;
+            max-width: 420px;
+        }
+
+        .hero-price {
+            margin-top: 1.5rem;
+            margin-bottom: 2.5rem;
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+            font-family: 'Playfair Display', serif;
+            color: #1a1a1a;
+        }
+
+        .currency-symbol {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 2rem;
+        }
+
+        .price-amount {
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+
+        .price-label {
+            font-size: 0.9rem;
+            font-family: 'Montserrat', sans-serif;
+            color: #555555;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background: linear-gradient(135deg, #E67E22 0%, #D4AF37 100%);
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 50px;
+            box-shadow: 0 10px 20px rgba(212, 175, 55, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-align: center;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(212, 175, 55, 0.5);
+        }
+
+        /* Outline Button */
+        .btn-outline {
+            width: 100%;
+            margin-top: 1.5rem;
+            padding: 0.8rem;
+            border: 2px solid #D4AF37;
+            background: transparent;
+            color: #1a1a1a;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            border-radius: 30px;
+            transition: 0.3s;
+        }
+
+        .btn-outline:hover {
+            background: #D4AF37;
+            color: white;
+        }
+
+        /* Bubbles */
+        .bubble-img {
+            position: absolute;
+            z-index: 4;
+            border-radius: 50%;
+            border: 5px solid rgba(255, 255, 255, 1);
+            background-size: cover;
+            background-position: center;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .bubble-1 {
+            width: 250px;
+            height: 250px;
+            top: 25%;
+            left: 47%;
+            background-image: url('https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?q=80&w=1974&auto=format&fit=crop');
+        }
+
+        /* --- ABOUT SECTION --- */
+        .about {
+            padding: 6rem 8%;
+            background-color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 5rem;
+            overflow: hidden;
+        }
+
+        .about-img-wrapper {
+            flex: 1;
+            position: relative;
+        }
+
+        .about-img {
+            width: 100%;
+            height: 500px;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .about-content {
+            flex: 1;
+        }
+
+        .section-header {
+            font-size: 0.85rem;
+            color: #D4AF37;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        h2.section-title {
+            font-size: 2.5rem;
+            font-family: 'Playfair Display', serif;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+
+        p.text-body {
+            color: #555555;
+            line-height: 1.8;
+            margin-bottom: 2rem;
+            font-size: 1rem;
+        }
+
+        /* --- PROPERTIES SECTION --- */
+        .properties {
+            padding: 6rem 5%;
+            background-color: #f8f8f8;
+        }
+
+        .prop-header-container {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .property-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .property-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.03);
+            transition: transform 0.4s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .property-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-img-container {
+            height: 260px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .slider-wrapper {
+            display: flex;
+            height: 100%;
+            transition: transform 0.4s ease;
+        }
+
+        .card-img {
+            width: 100%;
+            min-width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+        .property-card:hover .card-img {
+            transform: scale(1.08);
+        }
+
+        .slider-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: 0.3s;
+            z-index: 5;
+            color: #1a1a1a;
+        }
+
+        .property-card:hover .slider-btn {
+            opacity: 1;
+        }
+
+        .slider-btn.prev {
+            left: 10px;
+        }
+
+        .slider-btn.next {
+            right: 10px;
+        }
+
+        .badges-container {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            align-items: flex-end;
+            z-index: 3;
+        }
+
+        .badge {
+            font-size: 0.6rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 4px 10px;
+            background: #1a1a1a;
+            color: white;
+            border-radius: 4px;
+        }
+
+        .loader-area {
+            text-align: center;
+            padding: 60px;
+            grid-column: 1/-1;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #eee;
+            border-top-color: #E67E22;
+            border-radius: 50%;
+            animation: spin 1s infinite linear;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .price-tag {
+            position: absolute;
+            bottom: 15px;
+            left: 15px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 8px 16px;
+            font-weight: 700;
+            color: #E67E22;
+            border-radius: 4px;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .card-info {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-info h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            font-family: 'Playfair Display', serif;
+            color: #1a1a1a;
+        }
+
+        .location {
+            color: #777;
+            font-size: 0.9rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .specs {
+            display: flex;
+            justify-content: space-between;
+            border-top: 1px solid #f0f0f0;
+            padding-top: 1rem;
+            color: #666;
+            font-size: 0.85rem;
+            margin-bottom: auto;
+        }
+
+        .specs span i {
+            color: #D4AF37;
+            margin-right: 6px;
+        }
+
+        .explore-more-container {
+            text-align: center;
+            margin-top: 4rem;
+        }
+
+        /* --- RESPONSIVE MEDIA QUERIES --- */
+        @media (max-width: 1400px) {
+            .hero h1 {
+                font-size: 3.5rem;
+            }
+
+            .hero-overlay {
+                width: 50%;
+            }
+
+            .hero-bg {
+                width: 55%;
+            }
+
+            .bubble-1 {
+                width: 150px;
+                height: 150px;
+                top: 20%;
+                left: 45%;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .hero-overlay {
+                width: 55%;
+            }
+
+            .hero h1 {
+                font-size: 3rem;
+            }
+
+            .bubble-1 {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+
+            /* --- STACKED LAYOUT --- */
+            .hero {
+                flex-direction: column;
+                min-height: auto;
+                padding-bottom: 4rem;
+            }
+
+            .hero-bg {
+                position: relative;
+                width: 100%;
+                height: 35vh;
+                order: 1;
+            }
+
+            .hero-overlay {
+                position: relative;
+                width: 100%;
+                height: auto;
+                clip-path: none;
+                background: transparent;
+                order: 2;
+                margin-top: -30px;
+            }
+
+            .hero-content {
+                width: 100%;
+                max-width: 100%;
+                padding: 2rem 5%;
+                background: white;
+                border-top-left-radius: 30px;
+                border-top-right-radius: 30px;
+                box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.05);
+                margin-top: 0;
+            }
+
+            .hero h1 {
+                font-size: 2.8rem;
+            }
+
+            .about {
+                flex-direction: column;
+                padding: 4rem 5%;
+                gap: 3rem;
+            }
+
+            .about-img {
+                height: 300px;
+            }
+
+            h2.section-title {
+                font-size: 2rem;
+            }
+
+            .property-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="navbar-placeholder"></div>
+
+    <section class="hero" id="hero">
+        <div class="hero-bg">
+            <video autoplay muted loop playsinline>
+                <source src="assests/flatvideo.mp4" type="video/mp4">
+            </video>
+        </div>
+
+        <div class="hero-overlay">
+            <div class="hero-content">
+                <span class="hero-tagline reveal">Premium Living</span>
+                <h1 class="reveal">Find Your <br><span>Dream Home</span></h1>
+                <p class="reveal">
+                    Discover exclusive properties in prime locations. Adishakti Realty bridges the gap between luxury
+                    and comfort for your perfect lifestyle.
+                </p>
+
+                <div class="hero-price reveal">
+                    <span class="currency-symbol">₹</span>
+                    <span class="price-amount">20 Lakhs</span>
+                    <span class="price-label">/ starting</span>
+                </div>
+
+                <a href="explore.html" class="cta-button reveal">Explore Properties &nbsp; <i
+                        class="fas fa-arrow-right"></i></a>
+            </div>
+        </div>
+
+        <div class="bubble-img bubble-1 reveal-img"></div>
+    </section>
+
+    <section class="about" id="about">
+        <div class="about-img-wrapper">
+            <img src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=2000&auto=format&fit=crop"
+                alt="Luxury Living Room" class="about-img">
+        </div>
+        <div class="about-content">
+            <span class="section-header">Our Philosophy</span>
+            <h2 class="section-title">Experience Luxury <br>Like Never Before</h2>
+            <p class="text-body">
+                We believe a home is more than just bricks and mortar; it's a sanctuary. With a focus on high-end
+                architecture and premium finishes, Adishakti Realty offers spaces that resonate with success and
+                tranquility.
+            </p>
+            <div style="display: flex; gap: 2rem;">
+                <div>
+                    <h3 style="font-size: 2rem; color: #D4AF37;">15+</h3>
+                    <p style="font-size: 0.8rem; color: #888;">Years Experience</p>
+                </div>
+                <div>
+                    <h3 style="font-size: 2rem; color: #D4AF37;">200+</h3>
+                    <p style="font-size: 0.8rem; color: #888;">Happy Families</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="properties" id="properties">
+        <div class="prop-header-container">
+            <span class="section-header">Current Market</span>
+            <h2 class="section-title">Latest Listings</h2>
+        </div>
+
+        <div class="property-grid" id="propertyGrid">
+            <div class="loader-area" id="initialLoader">
+                <div class="spinner"></div>
+                <p style="color:#666;">Fetching Latest Properties...</p>
+            </div>
+        </div>
+
+        <div class="explore-more-container">
+            <a href="explore.html" class="cta-button">Explore More Properties</a>
+        </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="layout.js"></script>
+
+    <script>
+        gsap.registerPlugin(ScrollTrigger);
+
+        let mm = gsap.matchMedia();
+
+        mm.add("(min-width: 769px)", () => {
+            // DESKTOP
+            gsap.from(".reveal", {
+                y: 50, opacity: 0, duration: 1, stagger: 0.15, ease: "power3.out", delay: 0.2
+            });
+            gsap.from(".reveal-img", {
+                scale: 0, opacity: 0, duration: 0.8, stagger: 0.2, ease: "back.out(1.7)", delay: 0.8
+            });
+            gsap.from(".about-img-wrapper", {
+                scrollTrigger: { trigger: ".about", start: "top 80%" },
+                x: -50, opacity: 0, duration: 1
+            });
+            gsap.from(".about-content", {
+                scrollTrigger: { trigger: ".about", start: "top 80%" },
+                x: 50, opacity: 0, duration: 1, delay: 0.2
+            });
+        });
+
+        mm.add("(max-width: 768px)", () => {
+            // MOBILE
+            gsap.from(".reveal", {
+                y: 30, opacity: 0, duration: 0.8, stagger: 0.1, ease: "power2.out"
+            });
+            gsap.from(".about-img-wrapper, .about-content", {
+                scrollTrigger: { trigger: ".about", start: "top 85%" },
+                y: 30, opacity: 0, duration: 0.8, stagger: 0.2
+            });
+        });
+
+        gsap.from(".property-card", {
+            scrollTrigger: { trigger: ".properties", start: "top 80%" },
+            y: 50, opacity: 0, duration: 0.8, stagger: 0.1, ease: "power2.out"
+        });
+    </script>
+
+    <script type="module">
+        import { collection, getDocs, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { db } from "./firebase-config.js";
+
+        const grid = document.getElementById('propertyGrid');
+        const initialLoader = document.getElementById('initialLoader');
+
+        async function fetchLatestProperties() {
+            try {
+                const collectionRef = collection(db, "adishakti");
+                const q = query(collectionRef, orderBy("createdAt", "desc"), limit(3));
+                const snapshot = await getDocs(q);
+
+                initialLoader.style.display = "none";
+
+                if (snapshot.empty) {
+                    grid.innerHTML = "<p style='text-align:center; width:100%; grid-column:1/-1; color:#666;'>No properties found.</p>";
+                    return;
+                }
+
+                snapshot.docs.forEach((doc) => {
+                    const data = doc.data();
+                    createCard(doc.id, data);
+                });
+
+                gsap.from(".new-card", {
+                    scrollTrigger: { trigger: ".properties", start: "top 80%" },
+                    y: 50, opacity: 0, duration: 0.8, stagger: 0.1, ease: "power2.out",
+                    onComplete: () => {
+                        document.querySelectorAll('.new-card').forEach(el => el.classList.remove('new-card'));
+                        ScrollTrigger.refresh();
+                    }
+                });
+
+            } catch (error) {
+                console.error("Error:", error);
+                grid.innerHTML = "<p style='color:red; text-align:center; grid-column:1/-1;'>Error loading data.</p>";
+            }
+        }
+
+        function createCard(id, data) {
+            const images = data.images && data.images.length > 0 ? data.images : ['https://via.placeholder.com/600x400'];
+            let sliderHTML = "";
+            images.forEach(img => { sliderHTML += `<img src="${img}" class="card-img">`; });
+
+            let badgesHTML = "";
+            if (data.isMahareraRegistered === 'Yes') badgesHTML += `<div class="badge">RERA</div>`;
+            if (data.isMsrdcApproved === 'Yes') badgesHTML += `<div class="badge">MSRDC</div>`;
+
+            let priceDisplay = data.price && data.price.includes('₹') ? data.price : `₹ ${data.price || 'On Request'}`;
+
+            const card = document.createElement('div');
+            card.className = 'property-card new-card';
+            card.innerHTML = `
+                <div class="card-img-container" id="slider-${id}">
+                    <div class="slider-wrapper" data-idx="0">${sliderHTML}</div>
+                    <div class="price-tag">${priceDisplay}</div>
+                    <div class="badges-container">${badgesHTML}</div>
+                    ${images.length > 1 ? `
+                        <button class="slider-btn prev" onclick="moveSlider('${id}', -1)"><i class="fas fa-chevron-left"></i></button>
+                        <button class="slider-btn next" onclick="moveSlider('${id}', 1)"><i class="fas fa-chevron-right"></i></button>
+                    ` : ''}
+                </div>
+                
+                <div class="card-info">
+                    <h3>${data.projectName}</h3>
+                    <div class="location"><i class="fas fa-map-marker-alt" style="color:#E67E22"></i> ${data.location || ''}</div>
+                    
+                    <div class="specs">
+                        <span><i class="fas fa-bed"></i> ${data.bhk || ''}</span>
+                        <span><i class="fas fa-vector-square"></i> ${data.carpetArea || ''}</span>
+                    </div>
+
+                    <a href="property.html?id=${id}" class="btn-outline" style="text-align: center; display: block; margin-top: auto;">
+                        View Details
+                    </a>
+                </div>
+            `;
+            grid.appendChild(card);
+        }
+
+        window.moveSlider = (id, direction) => {
+            const slider = document.querySelector(`#slider-${id} .slider-wrapper`);
+            if (!slider) return;
+            const totalSlides = slider.children.length;
+            let idx = parseInt(slider.getAttribute('data-idx') || 0);
+            idx += direction;
+            if (idx < 0) idx = totalSlides - 1;
+            if (idx >= totalSlides) idx = 0;
+            slider.style.transform = `translateX(-${idx * 100}%)`;
+            slider.setAttribute('data-idx', idx);
+        };
+
+        fetchLatestProperties();
+    </script>
+</body>
+
+</html>

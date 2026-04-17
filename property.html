@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>Property Details | Adishakti Realty</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #f9f9f9;
+            color: #1a1a1a;
+            overflow-x: hidden;
+            padding-top: 0;
+        }
+
+        /* --- CUSTOM FLOATING HEADER --- */
+        .property-nav {
+            position: fixed; top: 0; left: 0; width: 100%;
+            padding: 20px 5%; z-index: 1000;
+            pointer-events: none;
+        }
+
+        .back-btn-pill {
+            pointer-events: auto;
+            text-decoration: none; color: #1a1a1a; font-weight: 700; font-size: 0.9rem;
+            display: inline-flex; align-items: center; gap: 10px;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            padding: 12px 24px; border-radius: 50px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .back-btn-pill.scrolled, .back-btn-pill:hover {
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            transform: translateY(2px);
+            color: #E67E22;
+        }
+
+        /* --- LOADER --- */
+        .loader-overlay {
+            position: fixed; inset: 0; background: white; z-index: 2000;
+            display: flex; align-items: center; justify-content: center;
+            flex-direction: column; gap: 10px;
+        }
+        .spinner {
+            width: 40px; height: 40px; border: 4px solid #f3f3f3; 
+            border-top: 4px solid #E67E22; border-radius: 50%; 
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* --- MOBILE LAYOUT --- */
+        #mobile-container { display: none; padding-bottom: 80px; padding-top: 0; }
+        
+        .mobile-gallery { position: relative; height: 50vh; background: #000; overflow: hidden; }
+        .mobile-slider { display: flex; transition: transform 0.3s ease; height: 100%; }
+        .mobile-slide { min-width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
+        .mobile-slide img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .mobile-dots {
+            position: absolute; bottom: 15px; left: 0; right: 0; 
+            display: flex; justify-content: center; gap: 8px; z-index: 10;
+        }
+        .dot { width: 8px; height: 8px; background: rgba(255,255,255,0.5); border-radius: 50%; transition: 0.3s; }
+        .dot.active { background: white; transform: scale(1.2); }
+
+        .mobile-counter {
+            position: absolute; bottom: 15px; right: 15px; background: rgba(0,0,0,0.6);
+            color: white; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; z-index: 10;
+        }
+
+        .mobile-content { padding: 25px 20px; background: white; border-radius: 25px 25px 0 0; margin-top: -25px; position: relative; z-index: 5; }
+        
+        .mobile-title { font-family: 'Playfair Display', serif; font-size: 1.8rem; margin-bottom: 5px; line-height: 1.2; }
+        .mobile-location { color: #666; font-size: 0.9rem; margin-bottom: 15px; display: flex; align-items: center; }
+        .mobile-location i { color: #E67E22; margin-right: 5px; }
+        .mobile-price { font-size: 1.5rem; font-weight: 700; color: #E67E22; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #eee; }
+
+        .mobile-specs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 25px; }
+        .mobile-spec-card { background: #f8f8f8; padding: 15px; border-radius: 10px; text-align: center; }
+        .mobile-spec-icon { color: #E67E22; font-size: 1.2rem; margin-bottom: 5px; }
+        .mobile-spec-label { font-size: 0.7rem; color: #888; text-transform: uppercase; }
+        .mobile-spec-value { font-weight: 700; font-size: 0.9rem; }
+
+        .mobile-details-section { margin-bottom: 25px; }
+        .mobile-section-title { font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+        .mobile-detail-content { font-size: 0.95rem; color: #555; line-height: 1.6; }
+
+        .mobile-cta-fixed {
+            position: fixed; bottom: 0; left: 0; right: 0; background: white; padding: 15px;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.1); display: flex; gap: 10px; z-index: 100;
+        }
+        .mobile-cta-btn {
+            flex: 1; padding: 14px; border-radius: 50px; text-align: center; text-decoration: none;
+            font-weight: 700; text-transform: uppercase; font-size: 0.9rem; display: flex;
+            align-items: center; justify-content: center; gap: 8px;
+        }
+        .whatsapp { background: #25D366; color: white; }
+        .call { background: #E67E22; color: white; }
+
+        /* --- DESKTOP LAYOUT --- */
+        #desktop-container {
+            display: none; grid-template-columns: 1.2fr 1fr; height: 100vh;
+            max-width: 100vw; margin: 0 auto; overflow: hidden;
+        }
+
+        .desktop-gallery { background: #000; position: relative; display: flex; flex-direction: column; height: 100vh; }
+        .desktop-main-wrapper { flex: 1; position: relative; cursor: pointer; overflow: hidden; }
+        .desktop-main-img { width: 100%; height: 100%; object-fit: contain; background: #111; transition: opacity 0.3s; }
+        
+        .desktop-nav-btn {
+            position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.2);
+            color: white; border: none; padding: 15px; cursor: pointer; font-size: 1.2rem; transition: 0.3s;
+        }
+        .desktop-nav-btn:hover { background: rgba(255,255,255,0.4); }
+        #desktop-prev { left: 0; } #desktop-next { right: 0; }
+
+        .desktop-counter {
+            position: absolute; top: 20px; right: 20px; background: rgba(0,0,0,0.7);
+            color: white; padding: 5px 15px; border-radius: 20px; font-weight: 600;
+        }
+
+        .desktop-thumbnails {
+            height: 100px; background: #222; display: flex; padding: 10px; gap: 10px; overflow-x: auto;
+        }
+        .desktop-thumb {
+            height: 100%; width: 120px; object-fit: cover; opacity: 0.5; cursor: pointer; border: 2px solid transparent; transition: 0.3s;
+        }
+        .desktop-thumb.active, .desktop-thumb:hover { opacity: 1; border-color: #E67E22; }
+
+        .desktop-details { 
+            padding: 80px 40px 40px; 
+            overflow-y: auto; background: white; 
+        }
+        .desktop-title { font-family: 'Playfair Display', serif; font-size: 2.5rem; margin-bottom: 5px; }
+        .desktop-location { color: #666; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+        .desktop-location i { color: #E67E22; }
+        .desktop-price { font-size: 2rem; font-weight: 700; color: #E67E22; padding-bottom: 20px; border-bottom: 1px solid #eee; margin-bottom: 30px; }
+
+        .desktop-specs { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 40px; }
+        .desktop-spec-card {
+            display: flex; align-items: center; gap: 15px; padding: 15px; 
+            border: 1px solid #eee; border-radius: 10px;
+        }
+        .desktop-spec-icon { font-size: 1.5rem; color: #E67E22; }
+        .desktop-spec-text h4 { font-size: 0.7rem; color: #999; text-transform: uppercase; }
+        .desktop-spec-text p { font-weight: 700; font-size: 1.1rem; }
+
+        .desktop-section { margin-bottom: 30px; }
+        .desktop-section-title { font-weight: 700; font-size: 1.1rem; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+        .desktop-section-title i { color: #E67E22; }
+        .desktop-detail-content { line-height: 1.7; color: #555; background: #f9f9f9; padding: 20px; border-radius: 10px; border-left: 3px solid #E67E22; }
+
+        .desktop-cta { display: flex; gap: 15px; margin-top: 20px; }
+        .desktop-cta-btn {
+            flex: 1; padding: 15px; text-align: center; text-decoration: none; border-radius: 5px;
+            font-weight: 700; text-transform: uppercase; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.3s;
+        }
+        .desktop-cta-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+
+        /* --- FULLSCREEN MODAL --- */
+        .fullscreen-modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95); z-index: 9999; 
+            display: none; /* Hidden by default */
+            flex-direction: column; justify-content: center; align-items: center;
+            opacity: 0; /* For fade animation */
+        }
+        
+        .fullscreen-content {
+            position: relative; width: 100%; height: 100%;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .fullscreen-img { max-width: 90%; max-height: 80%; object-fit: contain; }
+        
+        .fullscreen-close { position: absolute; top: 20px; right: 20px; color: white; font-size: 2rem; cursor: pointer; border: none; background: transparent; z-index: 10001; }
+        
+        .fullscreen-nav { 
+            position: absolute; top: 50%; width: 100%; display: flex; 
+            justify-content: space-between; padding: 0 20px; pointer-events: none; 
+        }
+        .fullscreen-btn { 
+            pointer-events: auto; background: rgba(255,255,255,0.1); color: white; 
+            border: none; width: 50px; height: 50px; border-radius: 50%; cursor: pointer; font-size: 1.5rem;
+        }
+        .fullscreen-counter { position: absolute; bottom: 20px; color: white; font-weight: 600; }
+
+        /* Badges */
+        .mobile-badges, .desktop-badges { display: flex; gap: 10px; margin-bottom: 10px; }
+        .badge { padding: 5px 10px; border-radius: 4px; font-size: 0.7rem; font-weight: 700; color: white; text-transform: uppercase; display: flex; align-items: center; gap: 5px; }
+        .badge.rera { background: #10b981; }
+        .badge.msrdc { background: #D4AF37; }
+
+    </style>
+</head>
+
+<body>
+
+    <nav class="property-nav">
+        <a href="explore.html" class="back-btn-pill" id="back-btn">
+            <i class="fas fa-arrow-left"></i> Back to Properties
+        </a>
+    </nav>
+
+    <div id="loader" class="loader-overlay">
+        <div class="spinner"></div>
+        <p>Loading Property Details...</p>
+    </div>
+
+    <div class="mobile-container" id="mobile-container">
+        <div class="mobile-gallery" id="mobile-gallery">
+            <div class="mobile-slider" id="mobile-slider"></div>
+            <div class="mobile-dots" id="mobile-dots"></div>
+            <div class="mobile-counter" id="mobile-counter">1 / 1</div>
+        </div>
+
+        <div class="mobile-content" id="mobile-content">
+            </div>
+
+        <div class="mobile-cta-fixed" id="mobile-cta">
+            </div>
+    </div>
+
+    <div class="desktop-container" id="desktop-container">
+        <div class="desktop-gallery">
+            <div class="desktop-main-wrapper" id="desktop-main">
+                <img id="desktop-main-img" class="desktop-main-img" src="" alt="Main Property Image">
+                <button class="desktop-nav-btn" id="desktop-prev"><i class="fas fa-chevron-left"></i></button>
+                <button class="desktop-nav-btn" id="desktop-next"><i class="fas fa-chevron-right"></i></button>
+                <div class="desktop-counter" id="desktop-counter">1 / 1</div>
+            </div>
+            <div class="desktop-thumbnails" id="desktop-thumbnails"></div>
+        </div>
+
+        <div class="desktop-details" id="desktop-details">
+            </div>
+    </div>
+
+    <div id="fullscreen-modal" class="fullscreen-modal">
+        <button class="fullscreen-close" id="fullscreen-close">
+            <i class="fas fa-times"></i>
+        </button>
+        <div class="fullscreen-content">
+            <img src="" alt="Property" id="fullscreen-img" class="fullscreen-image">
+            <div class="fullscreen-nav">
+                <button class="fullscreen-btn" id="fullscreen-prev"><i class="fas fa-chevron-left"></i></button>
+                <button class="fullscreen-btn" id="fullscreen-next"><i class="fas fa-chevron-right"></i></button>
+            </div>
+            <div class="fullscreen-counter" id="fullscreen-counter">1 / 1</div>
+        </div>
+    </div>
+
+    <script src="layout.js"></script>
+
+    <script type="module">
+        import { db } from "./firebase-config.js";
+        import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        // Global Variables
+        const urlParams = new URLSearchParams(window.location.search);
+        const propId = urlParams.get('id');
+        let images = [];
+        let currentIndex = 0;
+        let propertyData = null;
+
+        // --- SCROLL EFFECT ---
+        window.addEventListener('scroll', () => {
+            const btn = document.getElementById('back-btn');
+            if (window.scrollY > 50) {
+                btn.classList.add('scrolled');
+            } else {
+                btn.classList.remove('scrolled');
+            }
+        });
+
+        // --- LOAD DATA ---
+        async function loadProperty() {
+            if (!propId) return;
+
+            try {
+                const docRef = doc(db, "adishakti", propId);
+                const docSnap = await getDoc(docRef);
+
+                if (docSnap.exists()) {
+                    propertyData = docSnap.data();
+                    images = propertyData.images || ['https://via.placeholder.com/1200x800'];
+                    renderProperty();
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        function renderProperty() {
+            document.getElementById('loader').style.display = 'none';
+            const isMobile = window.innerWidth < 900;
+            if (isMobile) renderMobile();
+            else renderDesktop();
+        }
+
+        // --- MOBILE RENDER ---
+        function renderMobile() {
+            document.getElementById('mobile-container').style.display = 'block';
+            
+            const slider = document.getElementById('mobile-slider');
+            const dots = document.getElementById('mobile-dots');
+            
+            slider.innerHTML = '';
+            dots.innerHTML = '';
+
+            images.forEach((img, i) => {
+                const slide = document.createElement('div');
+                slide.className = 'mobile-slide';
+                
+                // Create Image Element Programmatically to handle events better
+                const imageEl = document.createElement('img');
+                imageEl.src = img;
+                imageEl.alt = `Property Image ${i+1}`;
+                
+                // Attach Click Listener directly
+                imageEl.addEventListener('click', () => openFullscreen(i));
+                
+                slide.appendChild(imageEl);
+                slider.appendChild(slide);
+
+                const dot = document.createElement('div');
+                dot.className = `dot ${i === 0 ? 'active' : ''}`;
+                dots.appendChild(dot);
+            });
+
+            updateMobileCounter();
+            setupMobileTouch();
+
+            // Populate Text Content (Same as before)
+            const content = document.getElementById('mobile-content');
+            const badges = buildBadges();
+            content.innerHTML = `
+                ${badges}
+                <h1 class="mobile-title">${propertyData.projectName}</h1>
+                <div class="mobile-location"><i class="fas fa-map-marker-alt"></i> <span>${propertyData.location}</span></div>
+                <div class="mobile-price">${propertyData.price}</div>
+                <div class="mobile-specs">
+                    <div class="mobile-spec-card">
+                        <div class="mobile-spec-icon"><i class="fas fa-bed"></i></div>
+                        <div class="mobile-spec-label">Configuration</div>
+                        <div class="mobile-spec-value">${propertyData.bhk}</div>
+                    </div>
+                    <div class="mobile-spec-card">
+                        <div class="mobile-spec-icon"><i class="fas fa-vector-square"></i></div>
+                        <div class="mobile-spec-label">Carpet Area</div>
+                        <div class="mobile-spec-value">${propertyData.carpetArea}</div>
+                    </div>
+                </div>
+                <div class="mobile-details-section">
+                    <div class="mobile-section-title"><i class="fas fa-star"></i> Amenities</div>
+                    <div class="mobile-detail-content">${propertyData.amenities || "Contact for details."}</div>
+                </div>
+                <div class="mobile-details-section">
+                    <div class="mobile-section-title"><i class="fas fa-road"></i> Connectivity</div>
+                    <div class="mobile-detail-content">${propertyData.connectivity || "Contact for details."}</div>
+                </div>
+            `;
+
+            // CTA
+            const whatsappURL = buildWhatsAppURL();
+            const callURL = `tel:+919322700627`;
+            document.getElementById('mobile-cta').innerHTML = `
+                <a href="${whatsappURL}" target="_blank" class="mobile-cta-btn whatsapp"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+                <a href="${callURL}" class="mobile-cta-btn call"><i class="fas fa-phone-alt"></i> Call</a>
+            `;
+        }
+
+        // --- DESKTOP RENDER ---
+        function renderDesktop() {
+            document.getElementById('desktop-container').style.display = 'grid';
+            
+            const mainImg = document.getElementById('desktop-main-img');
+            mainImg.src = images[0];
+            
+            // Attach Click for Desktop
+            document.getElementById('desktop-main').onclick = () => openFullscreen(currentIndex);
+
+            const thumbContainer = document.getElementById('desktop-thumbnails');
+            thumbContainer.innerHTML = ''; 
+            
+            images.forEach((img, i) => {
+                const thumb = document.createElement('img');
+                thumb.src = img;
+                thumb.className = `desktop-thumb ${i === 0 ? 'active' : ''}`;
+                thumb.onclick = (e) => { e.stopPropagation(); changeImage(i); };
+                thumbContainer.appendChild(thumb);
+            });
+
+            updateDesktopCounter();
+
+            // Populate Desktop Text (Same as before)
+            const details = document.getElementById('desktop-details');
+            const badges = buildBadges();
+            const whatsappURL = buildWhatsAppURL();
+            const callURL = `tel:+919322700627`;
+
+            details.innerHTML = `
+                <div class="desktop-header">
+                    ${badges}
+                    <h1 class="desktop-title">${propertyData.projectName}</h1>
+                    <div class="desktop-location"><i class="fas fa-map-marker-alt"></i> <span>${propertyData.location}</span></div>
+                    <div class="desktop-price">${propertyData.price}</div>
+                </div>
+                <div class="desktop-specs">
+                    <div class="desktop-spec-card">
+                        <div class="desktop-spec-icon"><i class="fas fa-bed"></i></div>
+                        <div class="desktop-spec-text"><h4>Configuration</h4><p>${propertyData.bhk}</p></div>
+                    </div>
+                    <div class="desktop-spec-card">
+                        <div class="desktop-spec-icon"><i class="fas fa-vector-square"></i></div>
+                        <div class="desktop-spec-text"><h4>Carpet Area</h4><p>${propertyData.carpetArea}</p></div>
+                    </div>
+                </div>
+                <div class="desktop-section">
+                    <div class="desktop-section-title"><i class="fas fa-star"></i> Amenities</div>
+                    <div class="desktop-detail-content">${propertyData.amenities || "Contact for details."}</div>
+                </div>
+                <div class="desktop-section">
+                    <div class="desktop-section-title"><i class="fas fa-road"></i> Connectivity</div>
+                    <div class="desktop-detail-content">${propertyData.connectivity || "Contact for details."}</div>
+                </div>
+                <div class="desktop-cta">
+                    <a href="${whatsappURL}" target="_blank" class="desktop-cta-btn whatsapp"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+                    <a href="${callURL}" class="desktop-cta-btn call"><i class="fas fa-phone-alt"></i> Call Now</a>
+                </div>
+            `;
+
+            document.getElementById('desktop-prev').onclick = (e) => { e.stopPropagation(); changeImage((currentIndex - 1 + images.length) % images.length); };
+            document.getElementById('desktop-next').onclick = (e) => { e.stopPropagation(); changeImage((currentIndex + 1) % images.length); };
+        }
+
+        // --- HELPER FUNCTIONS ---
+        function buildBadges() {
+            let html = '';
+            if (propertyData.isMahareraRegistered === 'Yes') html += '<div class="badge rera"><i class="fas fa-check-circle"></i> RERA</div>';
+            if (propertyData.isMsrdcApproved === 'Yes') html += '<div class="badge msrdc"><i class="fas fa-shield-alt"></i> MSRDC</div>';
+            return html ? `<div class="${window.innerWidth < 900 ? 'mobile' : 'desktop'}-badges">${html}</div>` : '';
+        }
+
+        function buildWhatsAppURL() {
+            const number = "919322700627";
+            const message = `Hello, I am interested in *${propertyData.projectName}* located at *${propertyData.location}*. Please share more details.`;
+            return `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
+        }
+
+        function setupMobileTouch() {
+            const slider = document.getElementById('mobile-slider');
+            let startX = 0;
+            let currentX = 0;
+
+            slider.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; });
+            slider.addEventListener('touchmove', (e) => { currentX = e.touches[0].clientX; });
+            slider.addEventListener('touchend', () => {
+                const diff = startX - currentX;
+                if (Math.abs(diff) > 50) {
+                    if (diff > 0 && currentIndex < images.length - 1) currentIndex++;
+                    else if (diff < 0 && currentIndex > 0) currentIndex--;
+                    updateMobileGallery();
+                }
+            });
+        }
+
+        function updateMobileGallery() {
+            const slider = document.getElementById('mobile-slider');
+            slider.style.transform = `translateX(-${currentIndex * 100}%)`;
+            document.querySelectorAll('.dot').forEach((dot, i) => dot.classList.toggle('active', i === currentIndex));
+            updateMobileCounter();
+        }
+
+        function updateMobileCounter() {
+            document.getElementById('mobile-counter').textContent = `${currentIndex + 1} / ${images.length}`;
+        }
+
+        function changeImage(index) {
+            currentIndex = index;
+            const mainImg = document.getElementById('desktop-main-img');
+            gsap.to(mainImg, { opacity: 0.3, duration: 0.2, onComplete: () => {
+                mainImg.src = images[index];
+                gsap.to(mainImg, { opacity: 1, duration: 0.3 });
+            }});
+            document.querySelectorAll('.desktop-thumb').forEach((t, i) => t.classList.toggle('active', i === index));
+            updateDesktopCounter();
+        }
+
+        function updateDesktopCounter() {
+            document.getElementById('desktop-counter').textContent = `${currentIndex + 1} / ${images.length}`;
+        }
+
+        // --- FULLSCREEN LOGIC (Fixed) ---
+        window.openFullscreen = (index) => {
+            currentIndex = index;
+            const modal = document.getElementById('fullscreen-modal');
+            const img = document.getElementById('fullscreen-img');
+            
+            // 1. Lock Body Scroll (Prevents Glitch)
+            document.body.style.overflow = 'hidden';
+            
+            // 2. Set Image
+            img.src = images[index];
+            
+            // 3. Show Modal
+            modal.style.display = 'flex';
+            gsap.to(modal, { opacity: 1, duration: 0.3 });
+            
+            updateFullscreenCounter();
+        };
+
+        window.closeFullscreen = () => {
+            const modal = document.getElementById('fullscreen-modal');
+            gsap.to(modal, { opacity: 0, duration: 0.3, onComplete: () => {
+                modal.style.display = 'none';
+                // Unlock Body Scroll
+                document.body.style.overflow = '';
+            }});
+        };
+
+        function updateFullscreenCounter() {
+            document.getElementById('fullscreen-counter').textContent = `${currentIndex + 1} / ${images.length}`;
+        }
+
+        // Event Listeners for Fullscreen
+        document.getElementById('fullscreen-close').onclick = closeFullscreen;
+        
+        document.getElementById('fullscreen-prev').onclick = () => {
+            currentIndex = (currentIndex - 1 + images.length) % images.length;
+            document.getElementById('fullscreen-img').src = images[currentIndex];
+            updateFullscreenCounter();
+        };
+
+        document.getElementById('fullscreen-next').onclick = () => {
+            currentIndex = (currentIndex + 1) % images.length;
+            document.getElementById('fullscreen-img').src = images[currentIndex];
+            updateFullscreenCounter();
+        };
+
+        // Resize Logic
+        window.addEventListener('resize', () => {
+            if (propertyData) {
+                const wasMobile = document.getElementById('mobile-container').style.display !== 'none';
+                const isMobile = window.innerWidth < 900;
+                if (wasMobile !== isMobile) {
+                    document.getElementById('mobile-container').style.display = 'none';
+                    document.getElementById('desktop-container').style.display = 'none';
+                    renderProperty();
+                }
+            }
+        });
+
+        // INIT
+        loadProperty();
+    </script>
+</body>
+</html>
